@@ -1,0 +1,51 @@
+@model IEnumerable<ProForm.Models.Membership>
+@{
+    ViewData["Title"] = "Абонементы";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Абонементы</h1>
+        <a asp-action="Sell" class="btn btn-primary">Продать абонемент</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Клиент</th>
+                            <th>Тип абонемента</th>
+                            <th>Дата начала</th>
+                            <th>Дата окончания</th>
+                            <th>Оставшиеся посещения</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="@(item.IsActive ? "table-success" : "")">
+                                <td>@item.Client.FullName</td>
+                                <td>@item.MembershipType.Name</td>
+                                <td>@item.StartDate.ToString("dd.MM.yyyy")</td>
+                                <td>@(item.EndDate?.ToString("dd.MM.yyyy") ?? "Не ограничен")</td>
+                                <td>@(item.RemainingVisits?.ToString() ?? "-")</td>
+                                <td>@(item.IsActive ? "Активен" : "Неактивен")</td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <a asp-action="Freeze" asp-route-id="@item.MembershipId" class="btn btn-sm btn-warning">Заморозить</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

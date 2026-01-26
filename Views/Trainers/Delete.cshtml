@@ -1,0 +1,36 @@
+@model ProForm.Models.Trainer
+@{
+    ViewData["Title"] = "Удалить тренера";
+}
+
+<div class="container">
+    <h1>Удалить тренера</h1>
+    <hr />
+    
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
+    <h3>Вы уверены, что хотите удалить этого тренера?</h3>
+    <div class="card mt-4">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">ФИО:</dt>
+                <dd class="col-sm-9">@Model.FullName</dd>
+
+                <dt class="col-sm-3">Специализация:</dt>
+                <dd class="col-sm-9">@(Model.Specialization ?? "Не указана")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="TrainerId" />
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+

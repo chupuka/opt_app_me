@@ -1,0 +1,111 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+<div class="container-fluid">
+    <h1>Главная</h1>
+    <p class="text-muted">Обзор текущей активности фитнес-клуба</p>
+
+    <div class="row mt-4">
+        <!-- Занятия на сегодня -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Занятия на сегодня</h5>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.TodayClasses != null && ((List<ProForm.Models.FitnessClass>)ViewBag.TodayClasses).Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var fitnessClass in (List<ProForm.Models.FitnessClass>)ViewBag.TodayClasses)
+                            {
+                                <li class="list-group-item">
+                                    <strong>@fitnessClass.StartTime.ToString("HH:mm") - @fitnessClass.EndTime.ToString("HH:mm")</strong><br>
+                                    @fitnessClass.Title<br>
+                                    <small class="text-muted">@(fitnessClass.Trainer?.FullName ?? "Тренер не назначен")</small>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">На сегодня занятий не запланировано</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Работающие тренеры -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Работающие тренеры</h5>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.WorkingTrainers != null && ((List<ProForm.Models.Trainer>)ViewBag.WorkingTrainers).Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var trainer in (List<ProForm.Models.Trainer>)ViewBag.WorkingTrainers)
+                            {
+                                <li class="list-group-item">
+                                    <strong>@trainer.FullName</strong><br>
+                                    <small class="text-muted">@trainer.Specialization</small>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Сегодня нет работающих тренеров</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Истекающие абонементы -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Истекающие абонементы</h5>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.ExpiringMemberships != null && ((List<ProForm.Models.Membership>)ViewBag.ExpiringMemberships).Any())
+                    {
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Клиент</th>
+                                    <th>Тип абонемента</th>
+                                    <th>Осталось дней</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var membership in (List<ProForm.Models.Membership>)ViewBag.ExpiringMemberships)
+                                {
+                                    var daysLeft = membership.EndDate.HasValue 
+                                        ? (membership.EndDate.Value - DateTime.Today).Days 
+                                        : 0;
+                                    var rowClass = daysLeft <= 1 ? "table-danger" : daysLeft <= 3 ? "table-warning" : "";
+                                    
+                                    <tr class="@rowClass">
+                                        <td>@membership.Client.FullName</td>
+                                        <td>@membership.MembershipType.Name</td>
+                                        <td>
+                                            <strong>@daysLeft</strong> @(daysLeft == 1 ? "день" : daysLeft < 5 ? "дня" : "дней")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Нет абонементов, срок действия которых истекает в ближайшие дни</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

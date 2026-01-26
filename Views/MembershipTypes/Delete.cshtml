@@ -1,0 +1,32 @@
+@model ProForm.Models.MembershipType
+@{
+    ViewData["Title"] = "Удалить тип абонемента";
+}
+
+<div class="container">
+    <h1>Удалить тип абонемента</h1>
+    <hr />
+    
+    <h3>Вы уверены, что хотите удалить этот тип абонемента?</h3>
+    <div class="card mt-4">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Название:</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Стоимость:</dt>
+                <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+
+                <dt class="col-sm-3">Тип:</dt>
+                <dd class="col-sm-9">@(Model.Category == MembershipCategory.TimeBased ? "Срочный" : "Пакетный")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="MembershipTypeId" />
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+

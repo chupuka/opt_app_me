@@ -1,0 +1,123 @@
+@{
+    ViewData["Title"] = "Расписание";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Расписание</h1>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">Добавить занятие</a>
+        }
+    </div>
+
+    <div id="calendar"></div>
+</div>
+
+<!-- Модальное окно для деталей занятия -->
+<div class="modal fade" id="classModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Детали занятия</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="classModalBody">
+                <!-- Загружается через AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ru',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: function(fetchInfo, successCallback, failureCallback) {
+                    fetch('/Schedule/GetEvents?start=' + fetchInfo.start.toISOString() + '&end=' + fetchInfo.end.toISOString())
+                        .then(response => response.json())
+                        .then(data => {
+                            var events = data.map(function(item) {
+                                return {
+                                    id: item.id,
+                                    title: item.title + ' - ' + item.trainer,
+                                    start: item.start,
+                                    end: item.end,
+                                    extendedProps: {
+                                        trainer: item.trainer,
+                                        hall: item.hall,
+                                        maxParticipants: item.maxParticipants
+                                    }
+                                };
+                            });
+                            successCallback(events);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching events:', error);
+                            failureCallback(error);
+                        });
+                },
+                eventClick: function(info) {
+                    window.location.href = '/Schedule/Details/' + info.event.id;
+                },
+                @if (User.IsInRole("Admin"))
+                {
+                    <text>
+                    editable: true,
+                    eventDrop: function(info) {
+                        updateEventTime(info.event.id, info.event.start, info.event.end);
+                    },
+                    eventResize: function(info) {
+                        updateEventTime(info.event.id, info.event.start, info.event.end);
+                    },
+                    </text>
+                }
+                eventDrop: function(info) {
+                    updateEventTime(info.event.id, info.event.start, info.event.end);
+                },
+                eventResize: function(info) {
+                    updateEventTime(info.event.id, info.event.start, info.event.end);
+                }
+            });
+            calendar.render();
+
+            function updateEventTime(eventId, start, end) {
+                fetch('/Schedule/UpdateEvent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: eventId,
+                        start: start.toISOString(),
+                        end: end.toISOString()
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert('Ошибка при обновлении времени занятия');
+                        calendar.refetchEvents();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating event:', error);
+                    alert('Ошибка при обновлении времени занятия');
+                    calendar.refetchEvents();
+                });
+            }
+        });
+    </script>
+}
+

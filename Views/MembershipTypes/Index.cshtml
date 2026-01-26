@@ -1,0 +1,43 @@
+@model IEnumerable<ProForm.Models.MembershipType>
+@{
+    ViewData["Title"] = "Типы абонементов";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Типы абонементов</h1>
+        <a asp-action="Create" class="btn btn-primary">Добавить тип абонемента</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Название абонемента</th>
+                            <th>Стоимость</th>
+                            <th>Тип абонемента</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Price.ToString("C")</td>
+                                <td>@(item.Category == MembershipCategory.TimeBased ? "Срочный" : "Пакетный")</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.MembershipTypeId" class="btn btn-sm btn-warning">Редактировать</a>
+                                    <a asp-action="Delete" asp-route-id="@item.MembershipTypeId" class="btn btn-sm btn-danger">Удалить</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

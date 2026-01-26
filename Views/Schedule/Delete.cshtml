@@ -1,0 +1,32 @@
+@model ProForm.Models.FitnessClass
+@{
+    ViewData["Title"] = "Удалить занятие";
+}
+
+<div class="container">
+    <h1>Удалить занятие</h1>
+    <hr />
+    
+    <h3>Вы уверены, что хотите удалить это занятие?</h3>
+    <div class="card mt-4">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Название:</dt>
+                <dd class="col-sm-9">@Model.Title</dd>
+
+                <dt class="col-sm-3">Тренер:</dt>
+                <dd class="col-sm-9">@(Model.Trainer?.FullName ?? "Не назначен")</dd>
+
+                <dt class="col-sm-3">Время:</dt>
+                <dd class="col-sm-9">@Model.StartTime.ToString("dd.MM.yyyy HH:mm") - @Model.EndTime.ToString("HH:mm")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="ClassId" />
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+

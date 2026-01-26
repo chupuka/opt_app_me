@@ -1,0 +1,66 @@
+@model ProForm.Controllers.SellMembershipViewModel
+@{
+    ViewData["Title"] = "Продажа абонемента";
+}
+
+<div class="container">
+    <h1>Продажа абонемента</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Sell">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="mb-3">
+                    <label asp-for="ClientId" class="form-label"></label>
+                    <select asp-for="ClientId" class="form-select" asp-items="ViewBag.ClientId">
+                        <option value="">Выберите клиента</option>
+                    </select>
+                    <span asp-validation-for="ClientId" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="MembershipTypeId" class="form-label"></label>
+                    <select asp-for="MembershipTypeId" class="form-select" asp-items="ViewBag.MembershipTypeId" id="membershipTypeSelect">
+                        <option value="">Выберите тип абонемента</option>
+                    </select>
+                    <span asp-validation-for="MembershipTypeId" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="StartDate" class="form-label"></label>
+                    <input asp-for="StartDate" type="date" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Amount" class="form-label"></label>
+                    <input asp-for="Amount" type="number" step="0.01" class="form-control" id="amountInput" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="PaymentMethod" class="form-label"></label>
+                    <select asp-for="PaymentMethod" class="form-select" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select>
+                    <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Автоматическое заполнение суммы при выборе типа абонемента
+        document.getElementById('membershipTypeSelect').addEventListener('change', function() {
+            // Здесь можно добавить AJAX запрос для получения цены абонемента
+        });
+    </script>
+}
+

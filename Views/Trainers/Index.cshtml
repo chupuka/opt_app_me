@@ -1,0 +1,54 @@
+@model IEnumerable<ProForm.Models.Trainer>
+@{
+    ViewData["Title"] = "Тренеры";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Тренеры</h1>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">Добавить тренера</a>
+        }
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ФИО тренера</th>
+                            <th>Специализация</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.FullName</td>
+                                <td>@(item.Specialization ?? "Не указана")</td>
+                                <td>
+                                    <span class="badge @(item.Status == TrainerStatus.Active ? "bg-success" : "bg-secondary")">
+                                        @(item.Status == TrainerStatus.Active ? "Активен" : "Неактивен")
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.TrainerId" class="btn btn-sm btn-info">Просмотр</a>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.TrainerId" class="btn btn-sm btn-warning">Редактировать</a>
+                                        <a asp-action="Delete" asp-route-id="@item.TrainerId" class="btn btn-sm btn-danger">Удалить</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

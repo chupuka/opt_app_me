@@ -1,0 +1,101 @@
+@model IEnumerable<ProForm.Models.Client>
+@{
+    ViewData["Title"] = "Клиенты";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Клиенты</h1>
+            <p class="text-muted">Управление клиентской базой</p>
+        </div>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">Добавить клиента</a>
+        }
+    </div>
+
+    <!-- Панель фильтрации -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Поиск по ФИО</label>
+                    <input type="text" name="searchString" class="form-control" placeholder="Поиск по ФИО" value="@ViewBag.SearchString" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Статус клиента</label>
+                    <select name="status" class="form-select">
+                        <option value="">Все</option>
+                        <option value="0" selected="@(ViewBag.Status?.ToString() == "0")">Активный</option>
+                        <option value="1" selected="@(ViewBag.Status?.ToString() == "1")">Неактивный</option>
+                        <option value="2" selected="@(ViewBag.Status?.ToString() == "2")">Потенциальный</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Дата окончания абонемента</label>
+                    <input type="date" name="expirationDate" class="form-control" value="@ViewBag.ExpirationDate" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Применить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Таблица клиентов -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ФИО клиента</th>
+                            <th>Статус клиента</th>
+                            <th>Тип абонемента</th>
+                            <th>Дата окончания абонемента</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var activeMembership = item.Memberships.FirstOrDefault(m => m.IsActive);
+                            var statusClass = item.Status == ClientStatus.Active ? "text-success" : 
+                                             item.Status == ClientStatus.Inactive ? "text-secondary" : "text-warning";
+                            var statusText = item.Status == ClientStatus.Active ? "Активный" : 
+                                            item.Status == ClientStatus.Inactive ? "Неактивный" : "Потенциальный";
+                            
+                            <tr>
+                                <td>@item.FullName</td>
+                                <td><span class="@statusClass">@statusText</span></td>
+                                <td>@(activeMembership?.MembershipType?.Name ?? "Нет абонемента")</td>
+                                <td>
+                                    @if (activeMembership?.EndDate.HasValue == true)
+                                    {
+                                        var daysLeft = (activeMembership.EndDate.Value - DateTime.Today).Days;
+                                        var dateClass = daysLeft <= 1 ? "text-danger" : daysLeft <= 3 ? "text-warning" : "";
+                                        <span class="@dateClass">@activeMembership.EndDate.Value.ToString("dd.MM.yyyy")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.ClientId" class="btn btn-sm btn-info">Просмотр</a>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.ClientId" class="btn btn-sm btn-warning">Редактировать</a>
+                                        <a asp-action="Delete" asp-route-id="@item.ClientId" class="btn btn-sm btn-danger">Удалить</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

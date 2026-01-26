@@ -1,0 +1,39 @@
+@model ProForm.Models.Client
+@{
+    ViewData["Title"] = "Удалить клиента";
+}
+
+<div class="container">
+    <h1>Удалить клиента</h1>
+    <hr />
+    
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
+    <h3>Вы уверены, что хотите удалить этого клиента?</h3>
+    <div class="card mt-4">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">ФИО:</dt>
+                <dd class="col-sm-9">@Model.FullName</dd>
+
+                <dt class="col-sm-3">Телефон:</dt>
+                <dd class="col-sm-9">@Model.Phone</dd>
+
+                <dt class="col-sm-3">Email:</dt>
+                <dd class="col-sm-9">@(Model.Email ?? "Не указан")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="ClientId" />
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+

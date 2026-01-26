@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Отчеты";
+}
+
+<div class="container-fluid">
+    <h1>Отчеты</h1>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Тип отчета</h5>
+                    <div class="list-group">
+                        <a href="/Reports/Financial" class="list-group-item list-group-item-action">Финансовый</a>
+                        <a href="/Reports/Attendance" class="list-group-item list-group-item-action">Посещаемость</a>
+                        <a href="/Reports/TrainerLoad" class="list-group-item list-group-item-action">Загрузка тренеров</a>
+                        <a href="/Reports/ClubLoad" class="list-group-item list-group-item-action">Загрузка клуба</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <p class="text-muted">Выберите тип отчета из списка слева</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

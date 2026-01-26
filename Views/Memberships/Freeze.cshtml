@@ -1,0 +1,45 @@
+@model ProForm.Controllers.FreezeMembershipViewModel
+@{
+    ViewData["Title"] = "Заморозить абонемент";
+}
+
+<div class="container">
+    <h1>Заморозить абонемент</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Freeze">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="MembershipId" />
+                
+                <div class="mb-3">
+                    <label asp-for="FreezeStartDate" class="form-label"></label>
+                    <input asp-for="FreezeStartDate" type="date" class="form-control" />
+                    <span asp-validation-for="FreezeStartDate" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="FreezeEndDate" class="form-label"></label>
+                    <input asp-for="FreezeEndDate" type="date" class="form-control" />
+                    <span asp-validation-for="FreezeEndDate" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Reason" class="form-label"></label>
+                    <textarea asp-for="Reason" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Reason" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

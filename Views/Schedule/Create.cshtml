@@ -1,0 +1,70 @@
+@model ProForm.Models.FitnessClass
+@{
+    ViewData["Title"] = "Добавить занятие";
+}
+
+<div class="container">
+    <h1>Добавить занятие</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="mb-3">
+                    <label asp-for="Type" class="form-label"></label>
+                    <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<ClassType>()"></select>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="TrainerId" class="form-label"></label>
+                    <select asp-for="TrainerId" class="form-select" asp-items="ViewBag.TrainerId">
+                        <option value="">Выберите тренера</option>
+                    </select>
+                    <span asp-validation-for="TrainerId" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Hall" class="form-label"></label>
+                    <input asp-for="Hall" class="form-control" />
+                    <span asp-validation-for="Hall" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="StartTime" class="form-label"></label>
+                    <input asp-for="StartTime" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="EndTime" class="form-label"></label>
+                    <input asp-for="EndTime" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="MaxParticipants" class="form-label"></label>
+                    <input asp-for="MaxParticipants" type="number" class="form-control" min="1" />
+                    <span asp-validation-for="MaxParticipants" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
