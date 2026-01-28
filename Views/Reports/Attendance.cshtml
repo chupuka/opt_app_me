@@ -1,0 +1,98 @@
+@model ProForm.Controllers.AttendanceReportViewModel
+@{
+    ViewData["Title"] = "Отчет по посещаемости";
+}
+
+<div class="container-fluid">
+    <h1>Отчет по посещаемости</h1>
+    <hr />
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Дата начала</label>
+                    <input type="date" name="startDate" class="form-control" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Дата окончания</label>
+                    <input type="date" name="endDate" class="form-control" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Сформировать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Статистика посещаемости</h5>
+            
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h6>Всего посещений</h6>
+                            <h3>@Model.TotalVisits</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6>Уникальных посетителей</h6>
+                            <h3>@Model.UniqueVisitors</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h6>Всего занятий</h6>
+                            <h3>@Model.TotalClasses</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <h6>Среднее посещений</h6>
+                            <h3>@(Model.TotalClasses > 0 ? (Model.TotalVisits / (double)Model.TotalClasses).ToString("F1") : "0")</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h6>Популярные занятия</h6>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Название занятия</th>
+                            <th>Количество посещений</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PopularClasses)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4">
+                <form asp-action="ExportPDF" method="post">
+                    <input type="hidden" name="reportType" value="Attendance" />
+                    <input type="hidden" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                    <input type="hidden" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                    <button type="submit" class="btn btn-primary">Экспорт в PDF</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

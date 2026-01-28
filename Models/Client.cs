@@ -10,6 +10,7 @@ namespace ProForm.Models
 
         [Required(ErrorMessage = "ФИО обязательно для заполнения")]
         [StringLength(255)]
+        [RegularExpression(@"^[а-яА-ЯёЁ\s]+$", ErrorMessage = "ФИО должно содержать только буквы и пробелы")]
         [Display(Name = "ФИО")]
         public string FullName { get; set; } = string.Empty;
 
@@ -20,7 +21,7 @@ namespace ProForm.Models
         [Required(ErrorMessage = "Телефон обязателен для заполнения")]
         [StringLength(20)]
         [Display(Name = "Телефон")]
-        [Phone(ErrorMessage = "Неверный формат телефона")]
+        [RegularExpression(@"^\+7\d{10}$", ErrorMessage = "Неверный формат телефона (+7XXXXXXXXXX)")]
         public string Phone { get; set; } = string.Empty;
 
         [StringLength(100)]

@@ -28,7 +28,7 @@ namespace ProForm.Models
         [Required]
         [Display(Name = "Дата оплаты")]
         [DataType(DataType.DateTime)]
-        public DateTime PaymentDate { get; set; } = DateTime.Now;
+        public DateTime PaymentDate { get; set; } = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
 
         [StringLength(500)]
         [Display(Name = "Примечание")]

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProForm.Data;
 using ProForm.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProForm.Controllers
 {
@@ -58,16 +59,29 @@ namespace ProForm.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("FullName,Specialization,Phone,Email,Status")] Trainer trainer)
         {
+            // Валидация модели вручную (для unit-тестов)
+            var validationContext = new ValidationContext(trainer, null, null);
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(trainer, validationContext, validationResults, true))
+            {
+                foreach (var error in validationResults)
+                {
+                    foreach (var memberName in error.MemberNames)
+                    {
+                        ModelState.AddModelError(memberName, error.ErrorMessage ?? "");
+                    }
+                }
+            }
+
+            // Проверка уникальности email
+            if (!string.IsNullOrEmpty(trainer.Email) && 
+                await _context.Trainers.AnyAsync(t => t.Email == trainer.Email))
+            {
+                ModelState.AddModelError("Email", "Тренер с таким email уже существует.");
+            }
+
             if (ModelState.IsValid)
             {
-                // Проверка уникальности email
-                if (!string.IsNullOrEmpty(trainer.Email) && 
-                    await _context.Trainers.AnyAsync(t => t.Email == trainer.Email))
-                {
-                    ModelState.AddModelError("Email", "Тренер с таким email уже существует.");
-                    return View(trainer);
-                }
-
                 _context.Add(trainer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

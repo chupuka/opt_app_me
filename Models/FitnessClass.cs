@@ -68,7 +68,7 @@ namespace ProForm.Models
         public bool Attended { get; set; }
 
         [Display(Name = "Дата регистрации")]
-        public DateTime RegistrationDate { get; set; } = DateTime.Now;
+        public DateTime RegistrationDate { get; set; } = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
 
         // Навигационные свойства
         [ForeignKey("ClassId")]

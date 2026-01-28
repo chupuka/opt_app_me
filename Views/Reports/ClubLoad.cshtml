@@ -1,0 +1,85 @@
+@model ProForm.Controllers.ClubLoadReportViewModel
+@{
+    ViewData["Title"] = "Загрузка клуба";
+}
+
+<div class="container-fluid">
+    <h1>Загрузка клуба</h1>
+    <hr />
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Дата начала</label>
+                    <input type="date" name="startDate" class="form-control" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Дата окончания</label>
+                    <input type="date" name="endDate" class="form-control" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Сформировать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Статистика загрузки клуба</h5>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h6>Пиковые дни</h6>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Количество посещений</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var day in Model.PeakDays)
+                            {
+                                <tr>
+                                    <td>@day.Key.ToString("dd.MM.yyyy")</td>
+                                    <td>@day.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h6>Пиковые часы</h6>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Час</th>
+                                <th>Количество посещений</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var hour in Model.PeakHours.OrderByDescending(h => h.Value))
+                            {
+                                <tr>
+                                    <td>@hour.Key:00</td>
+                                    <td>@hour.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <form asp-action="ExportPDF" method="post">
+                    <input type="hidden" name="reportType" value="ClubLoad" />
+                    <input type="hidden" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                    <input type="hidden" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                    <button type="submit" class="btn btn-primary">Экспорт в PDF</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

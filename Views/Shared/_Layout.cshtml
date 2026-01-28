@@ -1,90 +1,102 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProForm</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProForm.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ProForm</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
-                        </li>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">Клиенты</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Trainers" asp-action="Index">Тренеры</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Memberships" asp-action="Index">Абонементы</a>
-                            </li>
-                        }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Schedule" asp-action="Index">Расписание</a>
-                        </li>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reports" asp-action="Index">Отчеты</a>
-                            </li>
-                        }
-                    </ul>
-                    <ul class="navbar-nav">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-dark">@User.Identity.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link text-dark">Выход</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Вход</a>
-                            </li>
-                        }
-                    </ul>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="wrapper">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="sidebar-header">
+                    <h3>ProForm</h3>
+                    <p class="text-muted small">Система управления фитнес-клубом</p>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+                <ul class="list-unstyled components">
+                    <li>
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-house-door"></i> Главная
+                        </a>
+                    </li>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <li>
+                            <a asp-controller="Clients" asp-action="Index">
+                                <i class="bi bi-people"></i> Клиенты
+                            </a>
+                        </li>
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <li>
+                            <a asp-controller="Trainers" asp-action="Index">
+                                <i class="bi bi-person-badge"></i> Тренеры
+                            </a>
+                        </li>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li>
+                            <a asp-controller="Memberships" asp-action="Index">
+                                <i class="bi bi-card-text"></i> Абонементы
+                            </a>
+                        </li>
+                    }
+                    <li>
+                        <a asp-controller="Schedule" asp-action="Index">
+                            <i class="bi bi-calendar-event"></i> Расписание
+                        </a>
+                    </li>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <li>
+                            <a asp-controller="Reports" asp-action="Index">
+                                <i class="bi bi-graph-up"></i> Отчеты
+                            </a>
+                        </li>
+                    }
+                </ul>
+                <div class="sidebar-footer">
+                    <div class="user-info">
+                        <i class="bi bi-person-circle"></i>
+                        <span>@User.Identity.Name</span>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-link text-white p-0 w-100 text-start">
+                            <i class="bi bi-box-arrow-right"></i> Выход
+                        </button>
+                    </form>
+                </div>
+            </nav>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - ProForm - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <!-- Page Content -->
+            <div id="content" class="content">
+                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+                    <div class="container-fluid">
+                        <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <span class="navbar-brand mb-0 h1 ms-3">@ViewData["Title"]</span>
+                    </div>
+                </nav>
+                <main class="main-content">
+                    @RenderBody()
+                </main>
+            </div>
         </div>
-    </footer>
+    }
+    else
+    {
+        @RenderBody()
+    }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

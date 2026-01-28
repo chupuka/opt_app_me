@@ -5,8 +5,13 @@
 
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Абонементы</h1>
-        <a asp-action="Sell" class="btn btn-primary">Продать абонемент</a>
+        <div>
+            <h1 class="mb-1">Абонементы</h1>
+            <p class="text-muted mb-0">Управление типами абонементов и операциями с ними</p>
+        </div>
+        <a asp-action="Sell" class="btn btn-primary">
+            <i class="bi bi-cart-plus"></i> Продать абонемент
+        </a>
     </div>
 
     <div class="card">

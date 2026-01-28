@@ -39,9 +39,30 @@ namespace ProForm.Controllers
 
             if (ModelState.IsValid)
             {
+                // Определяем, является ли ввод email или логином
+                ApplicationUser? user = null;
+                string loginOrEmail = model.LoginOrEmail.Trim();
+                
+                if (loginOrEmail.Contains('@'))
+                {
+                    // Это email
+                    user = await _userManager.FindByEmailAsync(loginOrEmail);
+                }
+                else
+                {
+                    // Это логин
+                    user = await _userManager.FindByNameAsync(loginOrEmail);
+                }
+
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Неверный логин или пароль.");
+                    return View(model);
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(
-                    model.Email ?? model.UserName ?? string.Empty,
-                    model.Password ?? string.Empty,
+                    user.UserName ?? string.Empty,
+                    model.Password,
                     model.RememberMe,
                     lockoutOnFailure: true);
 
@@ -94,17 +115,14 @@ namespace ProForm.Controllers
 
     public class LoginViewModel
     {
+        [Required(ErrorMessage = "Логин или Email обязателен")]
         [Display(Name = "Логин или Email")]
-        public string? UserName { get; set; }
-
-        [Display(Name = "Email")]
-        [EmailAddress]
-        public string? Email { get; set; }
+        public string LoginOrEmail { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Пароль обязателен")]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
-        public string? Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [Display(Name = "Запомнить меня")]
         public bool RememberMe { get; set; }

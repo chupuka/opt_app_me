@@ -20,7 +20,7 @@ namespace ProForm.Models
         [Required(ErrorMessage = "Телефон обязателен для заполнения")]
         [StringLength(20)]
         [Display(Name = "Телефон")]
-        [Phone(ErrorMessage = "Неверный формат телефона")]
+        [RegularExpression(@"^\+7\d{10}$", ErrorMessage = "Неверный формат телефона (+7XXXXXXXXXX)")]
         public string Phone { get; set; } = string.Empty;
 
         [StringLength(100)]

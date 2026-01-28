@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProForm.Data;
 using ProForm.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProForm.Controllers
 {
@@ -86,6 +87,27 @@ namespace ProForm.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("FullName,DateOfBirth,Phone,Email,Status")] Client client)
         {
+            // Валидация модели вручную (для unit-тестов)
+            var validationContext = new ValidationContext(client, null, null);
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(client, validationContext, validationResults, true))
+            {
+                foreach (var error in validationResults)
+                {
+                    foreach (var memberName in error.MemberNames)
+                    {
+                        ModelState.AddModelError(memberName, error.ErrorMessage ?? "");
+                    }
+                }
+            }
+
+            // Проверка уникальности телефона
+            if (!string.IsNullOrEmpty(client.Phone) && 
+                await _context.Clients.AnyAsync(c => c.Phone == client.Phone))
+            {
+                ModelState.AddModelError("Phone", "Клиент с таким телефоном уже существует.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(client);

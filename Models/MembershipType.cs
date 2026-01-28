@@ -14,7 +14,7 @@ namespace ProForm.Models
         public string Name { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Стоимость обязательна для заполнения")]
-        [Range(0, double.MaxValue, ErrorMessage = "Стоимость должна быть положительной")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Стоимость должна быть положительной")]
         [Display(Name = "Стоимость")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }

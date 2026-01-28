@@ -19,7 +19,7 @@ namespace ProForm.Models
         [Required]
         [Display(Name = "Дата начала")]
         [DataType(DataType.Date)]
-        public DateTime StartDate { get; set; } = DateTime.Today;
+        public DateTime StartDate { get; set; } = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Unspecified);
 
         [Display(Name = "Дата окончания")]
         [DataType(DataType.Date)]

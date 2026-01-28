@@ -6,12 +6,14 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1>Клиенты</h1>
-            <p class="text-muted">Управление клиентской базой</p>
+            <h1 class="mb-1">Клиенты</h1>
+            <p class="text-muted mb-0">Управление клиентской базой</p>
         </div>
         @if (User.IsInRole("Admin"))
         {
-            <a asp-action="Create" class="btn btn-primary">Добавить клиента</a>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Добавить клиента
+            </a>
         }
     </div>
 

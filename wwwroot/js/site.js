@@ -1,4 +1,24 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+// Sidebar toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarCollapse = document.getElementById('sidebarCollapse');
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    
+    if (sidebarCollapse && sidebar && content) {
+        sidebarCollapse.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            content.classList.toggle('active');
+        });
+    }
+    
+    // Highlight active menu item
+    const currentPath = window.location.pathname;
+    const menuItems = document.querySelectorAll('.components a');
+    
+    menuItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && currentPath.startsWith(href)) {
+            item.classList.add('active');
+        }
+    });
+});

@@ -1,0 +1,68 @@
+@model ProForm.Controllers.TrainerLoadReportViewModel
+@{
+    ViewData["Title"] = "Загрузка тренеров";
+}
+
+<div class="container-fluid">
+    <h1>Загрузка тренеров</h1>
+    <hr />
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Дата начала</label>
+                    <input type="date" name="startDate" class="form-control" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Дата окончания</label>
+                    <input type="date" name="endDate" class="form-control" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Сформировать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Статистика по тренерам</h5>
+            
+            <div class="mt-4">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Тренер</th>
+                            <th>Количество занятий</th>
+                            <th>Всего часов</th>
+                            <th>Среднее часов в день</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var trainer in Model.TrainerStats)
+                        {
+                            var daysCount = (Model.EndDate - Model.StartDate).Days + 1;
+                            var avgHours = daysCount > 0 ? trainer.TotalHours / daysCount : 0;
+                            <tr>
+                                <td>@trainer.TrainerName</td>
+                                <td>@trainer.ClassesCount</td>
+                                <td>@trainer.TotalHours.ToString("F1")</td>
+                                <td>@avgHours.ToString("F1")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4">
+                <form asp-action="ExportPDF" method="post">
+                    <input type="hidden" name="reportType" value="TrainerLoad" />
+                    <input type="hidden" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                    <input type="hidden" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                    <button type="submit" class="btn btn-primary">Экспорт в PDF</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
